@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <PackageId>JapaneseCharacters</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Junji Watanabe</Authors>
+    <RepositoryUrl>https://github.com/jyunji-watanabe/JapaneseCharacters</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Kana.NET" Version="1.0.6" />
+    <PackageReference Include="OutSystems.ExternalLibraries.SDK" Version="1.5.0" />
+    <EmbeddedResource Include="Resources/JapaneseCharacters.icon.png" />
+  </ItemGroup>
+
+</Project>
