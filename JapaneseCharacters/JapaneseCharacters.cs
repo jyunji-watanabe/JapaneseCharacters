@@ -12,12 +12,28 @@ public class JapaneseCharacters : IJapaneseCharacters
         return KanaConverter.ToWide(SourceText);
     }
 
+    public List<string> HankakuToZenkaku_Bulk(List<string> SourceTexts)
+    {
+        if (SourceTexts == null || SourceTexts.Count == 0)
+            return [];
+
+        return [.. SourceTexts.Select(sourceText => KanaConverter.ToWide(sourceText))];
+    }
+
     public string ZenkakuToHankaku(string SourceText)
     {
         if (string.IsNullOrEmpty(SourceText))
             return SourceText;
 
         return KanaConverter.ToNarrow(SourceText);
+    }
+
+    public List<string> ZenkakuToHankaku_Bulk(List<string> SourceTexts)
+    {
+        if (SourceTexts == null || SourceTexts.Count == 0)
+            return [];
+
+        return [.. SourceTexts.Select(sourceText => KanaConverter.ToNarrow(sourceText))];
     }
 
     public string HiraganaToKatakana(string SourceText)

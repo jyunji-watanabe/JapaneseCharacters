@@ -20,6 +20,17 @@ public interface IJapaneseCharacters
         string SourceText);
 
     [OSAction(
+        Description = "Converts a list of half-width (Hankaku) texts to full-width (Zenkaku) texts",
+        ReturnName = "ResultList",
+        ReturnDescription = "A List of texts with their original half-width characters converted into full-width characters",
+        ReturnType = OSDataType.InferredFromDotNetType)]
+    List<string> HankakuToZenkaku_Bulk(
+        [OSParameter(
+            Description = "A List of texts to convert",
+            DataType = OSDataType.InferredFromDotNetType)]
+        List<string> SourceTexts);
+
+    [OSAction(
         Description = "Converts full-width (Zenkaku) characters to half-width (Hankaku) characters",
         ReturnName = "ResultText",
         ReturnDescription = "A Text with its original full-width characters converted into half-width characters",
@@ -29,6 +40,17 @@ public interface IJapaneseCharacters
             Description = "A Text to convert",
             DataType = OSDataType.Text)]
         string SourceText);
+
+    [OSAction(
+        Description = "Converts a list of full-width (Zenkaku) texts to half-width (Hankaku) texts",
+        ReturnName = "ResultList",
+        ReturnDescription = "A List of texts with their original full-width characters converted into half-width characters",
+        ReturnType = OSDataType.InferredFromDotNetType)]
+    List<string> ZenkakuToHankaku_Bulk(
+        [OSParameter(
+            Description = "A List of texts to convert",
+            DataType = OSDataType.InferredFromDotNetType)]
+        List<string> SourceTexts);
 
     [OSAction(
         Description = "Converts Hiragana characters to Katakana characters",
