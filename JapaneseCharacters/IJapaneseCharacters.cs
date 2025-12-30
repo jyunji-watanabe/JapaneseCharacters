@@ -24,7 +24,7 @@ public interface IJapaneseCharacters
         ReturnName = "ResultList",
         ReturnDescription = "A List of texts with their original half-width characters converted into full-width characters",
         ReturnType = OSDataType.InferredFromDotNetType)]
-    List<string> HankakuToZenkaku_Bulk(
+    List<string> HankakuToZenkakuBatch(
         [OSParameter(
             Description = "A List of texts to convert",
             DataType = OSDataType.InferredFromDotNetType)]
@@ -46,7 +46,7 @@ public interface IJapaneseCharacters
         ReturnName = "ResultList",
         ReturnDescription = "A List of texts with their original full-width characters converted into half-width characters",
         ReturnType = OSDataType.InferredFromDotNetType)]
-    List<string> ZenkakuToHankaku_Bulk(
+    List<string> ZenkakuToHankakuBatch(
         [OSParameter(
             Description = "A List of texts to convert",
             DataType = OSDataType.InferredFromDotNetType)]
@@ -64,6 +64,17 @@ public interface IJapaneseCharacters
         string SourceText);
 
     [OSAction(
+        Description = "Converts a list of Hiragana texts to Katakana texts",
+        ReturnName = "ResultList",
+        ReturnDescription = "A List of texts with their original Hiragana characters converted into Katakana characters",
+        ReturnType = OSDataType.InferredFromDotNetType)]
+    List<string> HiraganaToKatakanaBatch(
+        [OSParameter(
+            Description = "A List of texts to convert",
+            DataType = OSDataType.InferredFromDotNetType)]
+        List<string> SourceTexts);
+
+    [OSAction(
         Description = "Converts Katakana characters to Hiragana characters",
         ReturnName = "ResultText",
         ReturnDescription = "A Text with its original Katakana characters converted into Hiragana characters",
@@ -73,4 +84,15 @@ public interface IJapaneseCharacters
             Description = "A Text to convert",
             DataType = OSDataType.Text)]
         string SourceText);
+
+    [OSAction(
+        Description = "Converts a list of Katakana texts to Hiragana texts",
+        ReturnName = "ResultList",
+        ReturnDescription = "A List of texts with their original Katakana characters converted into Hiragana characters",
+        ReturnType = OSDataType.InferredFromDotNetType)]
+    List<string> KatakanaToHiraganaBatch(
+        [OSParameter(
+            Description = "A List of texts to convert",
+            DataType = OSDataType.InferredFromDotNetType)]
+        List<string> SourceTexts);
 }

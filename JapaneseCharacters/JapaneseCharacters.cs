@@ -12,7 +12,7 @@ public class JapaneseCharacters : IJapaneseCharacters
         return KanaConverter.ToWide(SourceText);
     }
 
-    public List<string> HankakuToZenkaku_Bulk(List<string> SourceTexts)
+    public List<string> HankakuToZenkakuBatch(List<string> SourceTexts)
     {
         if (SourceTexts == null || SourceTexts.Count == 0)
             return [];
@@ -28,7 +28,7 @@ public class JapaneseCharacters : IJapaneseCharacters
         return KanaConverter.ToNarrow(SourceText);
     }
 
-    public List<string> ZenkakuToHankaku_Bulk(List<string> SourceTexts)
+    public List<string> ZenkakuToHankakuBatch(List<string> SourceTexts)
     {
         if (SourceTexts == null || SourceTexts.Count == 0)
             return [];
@@ -44,11 +44,27 @@ public class JapaneseCharacters : IJapaneseCharacters
         return KanaConverter.ToKatakana(SourceText);
     }
 
+    public List<string> HiraganaToKatakanaBatch(List<string> SourceTexts)
+    {
+        if (SourceTexts == null || SourceTexts.Count == 0)
+            return [];
+
+        return [.. SourceTexts.Select(sourceText => KanaConverter.ToKatakana(sourceText))];
+    }
+
     public string KatakanaToHiragana(string SourceText)
     {
         if (string.IsNullOrEmpty(SourceText))
             return SourceText;
 
         return KanaConverter.ToHiragana(SourceText);
+    }
+
+    public List<string> KatakanaToHiraganaBatch(List<string> SourceTexts)
+    {
+        if (SourceTexts == null || SourceTexts.Count == 0)
+            return [];
+
+        return [.. SourceTexts.Select(sourceText => KanaConverter.ToHiragana(sourceText))];
     }
 }
