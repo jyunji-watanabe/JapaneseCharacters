@@ -222,7 +222,7 @@ public class JapaneseCharactersTests
         string sourceText = "ひらがな";
 
         // Act
-        string result = _japaneseCharacters.HiraganaToKatakana(sourceText);
+        string result = _japaneseCharacters.HiraganaToKatakana(sourceText, []);
 
         // Assert
         Assert.Equal("ヒラガナ", result);
@@ -235,7 +235,7 @@ public class JapaneseCharactersTests
         string sourceText = "";
 
         // Act
-        string result = _japaneseCharacters.HiraganaToKatakana(sourceText);
+        string result = _japaneseCharacters.HiraganaToKatakana(sourceText, []);
 
         // Assert
         Assert.Equal("", result);
@@ -248,7 +248,7 @@ public class JapaneseCharactersTests
         string? sourceText = null;
 
         // Act
-        string? result = _japaneseCharacters.HiraganaToKatakana(sourceText!);
+        string? result = _japaneseCharacters.HiraganaToKatakana(sourceText!, []);
 
         // Assert
         Assert.Null(result);
@@ -261,10 +261,64 @@ public class JapaneseCharactersTests
         string sourceText = "こんにちは123";
 
         // Act
-        string result = _japaneseCharacters.HiraganaToKatakana(sourceText);
+        string result = _japaneseCharacters.HiraganaToKatakana(sourceText, []);
 
         // Assert
         Assert.Equal("コンニチハ123", result);
+    }
+
+    [Fact]
+    public void HiraganaToKatakana_WithCustomMappings_OverridesSpecifiedCharactersOnly()
+    {
+        // Arrange
+        string sourceText = "ひらがな";
+        var customMappings = new List<CustomMapping>
+        {
+            new() { SourceCharacter = "ひ", MappedCharacter = "X" }
+        };
+
+        // Act
+        string result = _japaneseCharacters.HiraganaToKatakana(sourceText, customMappings);
+
+        // Assert
+        Assert.Equal("Xラガナ", result);
+    }
+
+    [Fact]
+    public void HiraganaToKatakana_WithCustomMappings_ResetsMapAfterCall()
+    {
+        // Arrange
+        var customMappings = new List<CustomMapping>
+        {
+            new() { SourceCharacter = "ひ", MappedCharacter = "X" }
+        };
+
+        // Act
+        var first = _japaneseCharacters.HiraganaToKatakana("ひらがな", customMappings);
+        var second = _japaneseCharacters.HiraganaToKatakana("ひらがな", []);
+
+        // Assert
+        Assert.Equal("Xラガナ", first);
+        Assert.Equal("ヒラガナ", second);
+    }
+
+    [Fact]
+    public void HiraganaToKatakana_WithInvalidCustomMappings_IgnoresInvalidItems()
+    {
+        // Arrange
+        string sourceText = "ひら";
+        var customMappings = new List<CustomMapping>
+        {
+            new() { SourceCharacter = "", MappedCharacter = "X" },
+            new() { SourceCharacter = "ひら", MappedCharacter = "Y" },
+            new() { SourceCharacter = "ひ", MappedCharacter = "X" }
+        };
+
+        // Act
+        string result = _japaneseCharacters.HiraganaToKatakana(sourceText, customMappings);
+
+        // Assert
+        Assert.Equal("Xラ", result);
     }
 
     #endregion
@@ -278,7 +332,7 @@ public class JapaneseCharactersTests
         var sourceTexts = new List<string> { "ひらがな", "かたかな", "もじ" };
 
         // Act
-        var result = _japaneseCharacters.HiraganaToKatakanaBatch(sourceTexts);
+        var result = _japaneseCharacters.HiraganaToKatakanaBatch(sourceTexts, []);
 
         // Assert
         Assert.Equal(3, result.Count);
@@ -294,7 +348,7 @@ public class JapaneseCharactersTests
         var sourceTexts = new List<string>();
 
         // Act
-        var result = _japaneseCharacters.HiraganaToKatakanaBatch(sourceTexts);
+        var result = _japaneseCharacters.HiraganaToKatakanaBatch(sourceTexts, []);
 
         // Assert
         Assert.Empty(result);
@@ -307,10 +361,50 @@ public class JapaneseCharactersTests
         List<string>? sourceTexts = null;
 
         // Act
-        var result = _japaneseCharacters.HiraganaToKatakanaBatch(sourceTexts!);
+        var result = _japaneseCharacters.HiraganaToKatakanaBatch(sourceTexts!, []);
 
         // Assert
         Assert.Empty(result);
+    }
+
+    [Fact]
+    public void HiraganaToKatakanaBatch_WithCustomMappings_AppliesOverrides()
+    {
+        // Arrange
+        var sourceTexts = new List<string> { "ひら", "なひ" };
+        var customMappings = new List<CustomMapping>
+        {
+            new() { SourceCharacter = "ひ", MappedCharacter = "X" }
+        };
+
+        // Act
+        var result = _japaneseCharacters.HiraganaToKatakanaBatch(sourceTexts, customMappings);
+
+        // Assert
+        Assert.Equal(2, result.Count);
+        Assert.Equal("Xラ", result[0]);
+        Assert.Equal("ナX", result[1]);
+    }
+
+    [Fact]
+    public void HiraganaToKatakanaBatch_WithCustomMappings_ResetsMapAfterCall()
+    {
+        // Arrange
+        var sourceTexts = new List<string> { "ひらがな" };
+        var customMappings = new List<CustomMapping>
+        {
+            new() { SourceCharacter = "ひ", MappedCharacter = "X" }
+        };
+
+        // Act
+        var first = _japaneseCharacters.HiraganaToKatakanaBatch(sourceTexts, customMappings);
+        var second = _japaneseCharacters.HiraganaToKatakanaBatch(sourceTexts, []);
+
+        // Assert
+        Assert.Single(first);
+        Assert.Single(second);
+        Assert.Equal("Xラガナ", first[0]);
+        Assert.Equal("ヒラガナ", second[0]);
     }
 
     #endregion
@@ -324,7 +418,7 @@ public class JapaneseCharactersTests
         string sourceText = "カタカナ";
 
         // Act
-        string result = _japaneseCharacters.KatakanaToHiragana(sourceText);
+        string result = _japaneseCharacters.KatakanaToHiragana(sourceText, []);
 
         // Assert
         Assert.Equal("かたかな", result);
@@ -337,7 +431,7 @@ public class JapaneseCharactersTests
         string sourceText = "";
 
         // Act
-        string result = _japaneseCharacters.KatakanaToHiragana(sourceText);
+        string result = _japaneseCharacters.KatakanaToHiragana(sourceText, []);
 
         // Assert
         Assert.Equal("", result);
@@ -350,7 +444,7 @@ public class JapaneseCharactersTests
         string? sourceText = null;
 
         // Act
-        string? result = _japaneseCharacters.KatakanaToHiragana(sourceText!);
+        string? result = _japaneseCharacters.KatakanaToHiragana(sourceText!, []);
 
         // Assert
         Assert.Null(result);
@@ -363,10 +457,64 @@ public class JapaneseCharactersTests
         string sourceText = "コンニチハ123";
 
         // Act
-        string result = _japaneseCharacters.KatakanaToHiragana(sourceText);
+        string result = _japaneseCharacters.KatakanaToHiragana(sourceText, []);
 
         // Assert
         Assert.Equal("こんにちは123", result);
+    }
+
+    [Fact]
+    public void KatakanaToHiragana_WithCustomMappings_OverridesSpecifiedCharactersOnly()
+    {
+        // Arrange
+        string sourceText = "カタカナ";
+        var customMappings = new List<CustomMapping>
+        {
+            new() { SourceCharacter = "カ", MappedCharacter = "X" }
+        };
+
+        // Act
+        string result = _japaneseCharacters.KatakanaToHiragana(sourceText, customMappings);
+
+        // Assert
+        Assert.Equal("XたXな", result);
+    }
+
+    [Fact]
+    public void KatakanaToHiragana_WithCustomMappings_ResetsMapAfterCall()
+    {
+        // Arrange
+        var customMappings = new List<CustomMapping>
+        {
+            new() { SourceCharacter = "カ", MappedCharacter = "X" }
+        };
+
+        // Act
+        var first = _japaneseCharacters.KatakanaToHiragana("カタカナ", customMappings);
+        var second = _japaneseCharacters.KatakanaToHiragana("カタカナ", []);
+
+        // Assert
+        Assert.Equal("XたXな", first);
+        Assert.Equal("かたかな", second);
+    }
+
+    [Fact]
+    public void KatakanaToHiragana_WithInvalidCustomMappings_IgnoresInvalidItems()
+    {
+        // Arrange
+        string sourceText = "カタ";
+        var customMappings = new List<CustomMapping>
+        {
+            new() { SourceCharacter = "", MappedCharacter = "X" },
+            new() { SourceCharacter = "カタ", MappedCharacter = "Y" },
+            new() { SourceCharacter = "カ", MappedCharacter = "X" }
+        };
+
+        // Act
+        string result = _japaneseCharacters.KatakanaToHiragana(sourceText, customMappings);
+
+        // Assert
+        Assert.Equal("Xた", result);
     }
 
     #endregion
@@ -380,7 +528,7 @@ public class JapaneseCharactersTests
         var sourceTexts = new List<string> { "カタカナ", "ヒラガナ", "モジ" };
 
         // Act
-        var result = _japaneseCharacters.KatakanaToHiraganaBatch(sourceTexts);
+        var result = _japaneseCharacters.KatakanaToHiraganaBatch(sourceTexts, []);
 
         // Assert
         Assert.Equal(3, result.Count);
@@ -396,7 +544,7 @@ public class JapaneseCharactersTests
         var sourceTexts = new List<string>();
 
         // Act
-        var result = _japaneseCharacters.KatakanaToHiraganaBatch(sourceTexts);
+        var result = _japaneseCharacters.KatakanaToHiraganaBatch(sourceTexts, []);
 
         // Assert
         Assert.Empty(result);
@@ -409,10 +557,50 @@ public class JapaneseCharactersTests
         List<string>? sourceTexts = null;
 
         // Act
-        var result = _japaneseCharacters.KatakanaToHiraganaBatch(sourceTexts!);
+        var result = _japaneseCharacters.KatakanaToHiraganaBatch(sourceTexts!, []);
 
         // Assert
         Assert.Empty(result);
+    }
+
+    [Fact]
+    public void KatakanaToHiraganaBatch_WithCustomMappings_AppliesOverrides()
+    {
+        // Arrange
+        var sourceTexts = new List<string> { "カタ", "ナカ" };
+        var customMappings = new List<CustomMapping>
+        {
+            new() { SourceCharacter = "カ", MappedCharacter = "X" }
+        };
+
+        // Act
+        var result = _japaneseCharacters.KatakanaToHiraganaBatch(sourceTexts, customMappings);
+
+        // Assert
+        Assert.Equal(2, result.Count);
+        Assert.Equal("Xた", result[0]);
+        Assert.Equal("なX", result[1]);
+    }
+
+    [Fact]
+    public void KatakanaToHiraganaBatch_WithCustomMappings_ResetsMapAfterCall()
+    {
+        // Arrange
+        var sourceTexts = new List<string> { "カタカナ" };
+        var customMappings = new List<CustomMapping>
+        {
+            new() { SourceCharacter = "カ", MappedCharacter = "X" }
+        };
+
+        // Act
+        var first = _japaneseCharacters.KatakanaToHiraganaBatch(sourceTexts, customMappings);
+        var second = _japaneseCharacters.KatakanaToHiraganaBatch(sourceTexts, []);
+
+        // Assert
+        Assert.Single(first);
+        Assert.Single(second);
+        Assert.Equal("XたXな", first[0]);
+        Assert.Equal("かたかな", second[0]);
     }
 
     #endregion

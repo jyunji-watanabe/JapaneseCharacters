@@ -2,6 +2,20 @@ using OutSystems.ExternalLibraries.SDK;
 
 namespace JapaneseCharacters;
 
+[OSStructure(Description = "Custom mapping item for Katakana to Hiragana conversion")]
+public struct CustomMapping
+{
+    [OSStructureField(
+        Description = "A source Katakana character to override",
+        DataType = OSDataType.Text)]
+    public string SourceCharacter { get; set; }
+
+    [OSStructureField(
+        Description = "A replacement text used when SourceCharacter is matched",
+        DataType = OSDataType.Text)]
+    public string MappedCharacter { get; set; }
+}
+
 [OSInterface(
     Name = "JapaneseCharacters",
     Description = "Japanese character conversion utilities",
@@ -61,7 +75,11 @@ public interface IJapaneseCharacters
         [OSParameter(
             Description = "A Text to convert",
             DataType = OSDataType.Text)]
-        string SourceText);
+        string SourceText,
+        [OSParameter(
+            Description = "A List of custom mappings used to override specific Hiragana conversions. If empty, default conversion is applied",
+            DataType = OSDataType.InferredFromDotNetType)]
+        List<CustomMapping> CustomMappings);
 
     [OSAction(
         Description = "Converts a list of Hiragana texts to Katakana texts",
@@ -72,7 +90,11 @@ public interface IJapaneseCharacters
         [OSParameter(
             Description = "A List of texts to convert",
             DataType = OSDataType.InferredFromDotNetType)]
-        List<string> SourceTexts);
+        List<string> SourceTexts,
+        [OSParameter(
+            Description = "A List of custom mappings used to override specific Hiragana conversions. If empty, default conversion is applied",
+            DataType = OSDataType.InferredFromDotNetType)]
+        List<CustomMapping> CustomMappings);
 
     [OSAction(
         Description = "Converts Katakana characters to Hiragana characters",
@@ -83,7 +105,11 @@ public interface IJapaneseCharacters
         [OSParameter(
             Description = "A Text to convert",
             DataType = OSDataType.Text)]
-        string SourceText);
+        string SourceText,
+        [OSParameter(
+            Description = "A List of custom mappings used to override specific Katakana conversions. If empty, default conversion is applied",
+            DataType = OSDataType.InferredFromDotNetType)]
+        List<CustomMapping> CustomMappings);
 
     [OSAction(
         Description = "Converts a list of Katakana texts to Hiragana texts",
@@ -94,5 +120,9 @@ public interface IJapaneseCharacters
         [OSParameter(
             Description = "A List of texts to convert",
             DataType = OSDataType.InferredFromDotNetType)]
-        List<string> SourceTexts);
+        List<string> SourceTexts,
+        [OSParameter(
+            Description = "A List of custom mappings used to override specific Katakana conversions. If empty, default conversion is applied",
+            DataType = OSDataType.InferredFromDotNetType)]
+        List<CustomMapping> CustomMappings);
 }
